@@ -1,49 +1,102 @@
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-   Name = "YOUSSEF HUB V3 | MM2 GOD MODE 🔪",
-   LoadingTitle = "جاري تفعيل 20+ ميزة خارقة لـ MM2...",
+   Name = "KUWAITI HUB V1 | يوسف هب 🔪",
+   LoadingTitle = "جاري تشغيل نظام السيطرة...",
    KeySystem = true,
    KeySettings = {
-      Title = "Key System | نظام المفتاح",
-      Subtitle = "المفتاح: YOUSSEF-2024",
-      Key = {"YOUSSEF-2024"}
+      Title = "نظام الدخول | Key System",
+      Subtitle = "ادخل المفتاح الخاص بالمطور يوسف",
+      Note = "لا تسأل عن المفتاح، المطور فقط يعرفه",
+      FileName = "KuwaitiHubKey", 
+      SaveKey = true, 
+      GrabKeyFromSite = false, 
+      Key = {"kuwaitihub1"} -- المفتاح الذي طلبته
    }
 })
 
--- تبويب الرؤية والكشف (7 ميزات)
-local VisualsTab = Window:CreateTab("الرؤية والكشف 👁️", 4483362458)
+-- 1. تبويب القتال (Combat) باستخدام الـ Remotes التي اصطدتها
+local CombatTab = Window:CreateTab("القتال ⚔️", 4483362458)
 
-VisualsTab:CreateToggle({Name = "كشف القاتل (Murderer ESP)", CurrentValue = false, Callback = function(v) end})
-VisualsTab:CreateToggle({Name = "كشف الشرطي (Sheriff ESP)", CurrentValue = false, Callback = function(v) end})
-VisualsTab:CreateToggle({Name = "كشف الأبرياء (Innocents ESP)", CurrentValue = false, Callback = function(v) end})
-VisualsTab:CreateToggle({Name = "كشف المسدس الساقط (Gun ESP)", CurrentValue = false, Callback = function(v) end})
-VisualsTab:CreateToggle({Name = "إظهار المسافة (Distance ESP)", CurrentValue = false, Callback = function(v) end})
-VisualsTab:CreateToggle({Name = "خطوط التتبع (Tracer Lines)", CurrentValue = false, Callback = function(v) end})
-VisualsTab:CreateButton({Name = "معرفة الأدوار في الشات (Chat Roles)", Callback = function() end})
+CombatTab:CreateButton({
+   Name = "رمي سكين تلقائي (Kill Target)",
+   Callback = function()
+       local target = nil
+       local dist = math.huge
+       for _, v in pairs(game.Players:GetPlayers()) do
+           if v ~= game.Players.LocalPlayer and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
+               local d = (v.Character.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+               if d < dist then
+                   dist = d
+                   target = v
+               end
+           end
+       end
+       if target then
+           local args = {
+               [1] = target.Character.HumanoidRootPart.CFrame,
+               [2] = target.Character.HumanoidRootPart.Position
+           }
+           game:GetService("Players").LocalPlayer.Character.Knife.Events.KnifeThrown:FireServer(unpack(args))
+       end
+   end,
+})
 
--- تبويب القتال والسيطرة (8 ميزات)
-local CombatTab = Window:CreateTab("القتال والفوز ⚔️", 4483362458)
+CombatTab:CreateButton({
+   Name = "إطلاق نار (Auto Shoot)",
+   Callback = function()
+       local target = nil
+       for _, v in pairs(game.Players:GetPlayers()) do
+           if v ~= game.Players.LocalPlayer and v.Character then
+               target = v
+               break 
+           end
+       end
+       if target then
+           local args = {
+               [1] = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame,
+               [2] = target.Character.HumanoidRootPart.Position
+           }
+           game:GetService("Players").LocalPlayer.Character.Gun.Shoot:FireServer(unpack(args))
+       end
+   end,
+})
 
-CombatTab:CreateButton({Name = "التصويب التلقائي الذكي (Silent Aim)", Callback = function() end})
-CombatTab:CreateToggle({Name = "القتل التلقائي للقريب (Knife Aura)", CurrentValue = false, Callback = function(v) end})
-CombatTab:CreateSlider({Name = "توسيع مدى القتل (Reach)", Range = {1, 100}, Increment = 1, CurrentValue = 1, Callback = function(v) end})
-CombatTab:CreateButton({Name = "رمي السكين تلقائياً (Auto Throw)", Callback = function() end})
-CombatTab:CreateButton({Name = "أخذ المسدس من بعيد (Teleport to Gun)", Callback = function() end})
-CombatTab:CreateToggle({Name = "إطلاق نار سريع (Fast Shoot)", CurrentValue = false, Callback = function(v) end})
-CombatTab:CreateButton({Name = "قتل الجميع (Kill All) - للقاتل", Callback = function() end})
-CombatTab:CreateToggle({Name = "مراوغة الرصاص (Dodge Shot)", CurrentValue = false, Callback = function(v) end})
+-- 2. تبويب الجوائز (Rewards)
+local GiftTab = Window:CreateTab("الجوائز 🎁", 4483362458)
 
--- تبويب تجميع الفلوس والميزات الأخرى (8 ميزات)
-local MiscTab = Window:CreateTab("تطوير الحساب 💰", 4483362458)
+GiftTab:CreateButton({
+   Name = "جلب جميع جوائز الباتل باس (Claim All)",
+   Callback = function()
+       Rayfield:Notify({Title = "يوسف هب", Content = "جاري جلب 100 جائزة...", Duration = 3})
+       for i = 1, 100 do
+           local args = {[1] = tostring(i)}
+           game:GetService("ReplicatedStorage").Remotes.Events.Christmas2025Remotes.ClaimBattlePassReward:FireServer(unpack(args))
+           if i % 10 == 0 then task.wait(0.1) end -- انتظار بسيط للحماية
+       end
+       Rayfield:Notify({Title = "تم", Content = "انتهت العملية!", Duration = 3})
+   end,
+})
 
-MiscTab:CreateToggle({Name = "جمع العملات تلقائياً (Auto Farm Coins)", CurrentValue = false, Callback = function(v) end})
-MiscTab:CreateButton({Name = "فتح جميع الحركات (Unlock Emotes)", Callback = function() end})
-MiscTab:CreateButton({Name = "الرقص أثناء المشي (Emote Walk)", Callback = function() end})
-MiscTab:CreateToggle({Name = "ضد التجمد (Anti-Stun)", CurrentValue = false, Callback = function(v) end})
-MiscTab:CreateButton({Name = "تخطي وقت الانتظار (Skip Lobby)", Callback = function() end})
-MiscTab:CreateToggle({Name = "اختراق الجدران (Noclip)", CurrentValue = false, Callback = function(v) end})
-MiscTab:CreateButton({Name = "إخفاء الاسم (Hide Name)", Callback = function() end})
-MiscTab:CreateButton({Name = "رؤية من خلف الجدران (X-Ray Mode)", Callback = function() end})
+-- 3. تبويب الرؤية (Visuals)
+local VisualsTab = Window:CreateTab("رؤية 👁️", 4483362458)
 
-Rayfield:Notify({Title = "يوسف هب V1", Content = "تم تفعيل 23 ميزة بنجاح!", Duration = 5})
+VisualsTab:CreateButton({
+   Name = "كشف القاتل والشرطي (ESP)",
+   Callback = function()
+       loadstring(game:HttpGet('https://raw.githubusercontent.com/Iratethisname10/CHUB/main/CHUBESP'))()
+   end,
+})
+
+-- 4. إعدادات الواجهة
+local ConfigTab = Window:CreateTab("الإعدادات ⚙️", 4483362458)
+ConfigTab:CreateButton({
+   Name = "إغلاق السكريبت",
+   Callback = function() Rayfield:Destroy() end,
+})
+
+Rayfield:Notify({
+   Title = "Kuwaiti Hub Ready!",
+   Content = "المفتاح صحيح، استمتع باللعب يا بطل",
+   Duration = 5,
+})
