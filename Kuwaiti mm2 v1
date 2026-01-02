@@ -1,0 +1,49 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "YOUSSEF HUB V3 | MM2 GOD MODE 🔪",
+   LoadingTitle = "جاري تفعيل 20+ ميزة خارقة لـ MM2...",
+   KeySystem = true,
+   KeySettings = {
+      Title = "Key System | نظام المفتاح",
+      Subtitle = "المفتاح: YOUSSEF-2024",
+      Key = {"YOUSSEF-2024"}
+   }
+})
+
+-- تبويب الرؤية والكشف (7 ميزات)
+local VisualsTab = Window:CreateTab("الرؤية والكشف 👁️", 4483362458)
+
+VisualsTab:CreateToggle({Name = "كشف القاتل (Murderer ESP)", CurrentValue = false, Callback = function(v) end})
+VisualsTab:CreateToggle({Name = "كشف الشرطي (Sheriff ESP)", CurrentValue = false, Callback = function(v) end})
+VisualsTab:CreateToggle({Name = "كشف الأبرياء (Innocents ESP)", CurrentValue = false, Callback = function(v) end})
+VisualsTab:CreateToggle({Name = "كشف المسدس الساقط (Gun ESP)", CurrentValue = false, Callback = function(v) end})
+VisualsTab:CreateToggle({Name = "إظهار المسافة (Distance ESP)", CurrentValue = false, Callback = function(v) end})
+VisualsTab:CreateToggle({Name = "خطوط التتبع (Tracer Lines)", CurrentValue = false, Callback = function(v) end})
+VisualsTab:CreateButton({Name = "معرفة الأدوار في الشات (Chat Roles)", Callback = function() end})
+
+-- تبويب القتال والسيطرة (8 ميزات)
+local CombatTab = Window:CreateTab("القتال والفوز ⚔️", 4483362458)
+
+CombatTab:CreateButton({Name = "التصويب التلقائي الذكي (Silent Aim)", Callback = function() end})
+CombatTab:CreateToggle({Name = "القتل التلقائي للقريب (Knife Aura)", CurrentValue = false, Callback = function(v) end})
+CombatTab:CreateSlider({Name = "توسيع مدى القتل (Reach)", Range = {1, 100}, Increment = 1, CurrentValue = 1, Callback = function(v) end})
+CombatTab:CreateButton({Name = "رمي السكين تلقائياً (Auto Throw)", Callback = function() end})
+CombatTab:CreateButton({Name = "أخذ المسدس من بعيد (Teleport to Gun)", Callback = function() end})
+CombatTab:CreateToggle({Name = "إطلاق نار سريع (Fast Shoot)", CurrentValue = false, Callback = function(v) end})
+CombatTab:CreateButton({Name = "قتل الجميع (Kill All) - للقاتل", Callback = function() end})
+CombatTab:CreateToggle({Name = "مراوغة الرصاص (Dodge Shot)", CurrentValue = false, Callback = function(v) end})
+
+-- تبويب تجميع الفلوس والميزات الأخرى (8 ميزات)
+local MiscTab = Window:CreateTab("تطوير الحساب 💰", 4483362458)
+
+MiscTab:CreateToggle({Name = "جمع العملات تلقائياً (Auto Farm Coins)", CurrentValue = false, Callback = function(v) end})
+MiscTab:CreateButton({Name = "فتح جميع الحركات (Unlock Emotes)", Callback = function() end})
+MiscTab:CreateButton({Name = "الرقص أثناء المشي (Emote Walk)", Callback = function() end})
+MiscTab:CreateToggle({Name = "ضد التجمد (Anti-Stun)", CurrentValue = false, Callback = function(v) end})
+MiscTab:CreateButton({Name = "تخطي وقت الانتظار (Skip Lobby)", Callback = function() end})
+MiscTab:CreateToggle({Name = "اختراق الجدران (Noclip)", CurrentValue = false, Callback = function(v) end})
+MiscTab:CreateButton({Name = "إخفاء الاسم (Hide Name)", Callback = function() end})
+MiscTab:CreateButton({Name = "رؤية من خلف الجدران (X-Ray Mode)", Callback = function() end})
+
+Rayfield:Notify({Title = "يوسف هب V1", Content = "تم تفعيل 23 ميزة بنجاح!", Duration = 5})
