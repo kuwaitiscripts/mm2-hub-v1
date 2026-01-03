@@ -1,102 +1,150 @@
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-   Name = "KUWAITI HUB V1 | يوسف هب 🔪",
-   LoadingTitle = "جاري تشغيل نظام السيطرة...",
+   Name = "KUWAITI HUB V7 | GOLDEN MM2 👑",
+   LoadingTitle = "جاري تفعيل أنظمة الإبادة الجماعية...",
    KeySystem = true,
    KeySettings = {
-      Title = "نظام الدخول | Key System",
-      Subtitle = "ادخل المفتاح الخاص بالمطور يوسف",
-      Note = "لا تسأل عن المفتاح، المطور فقط يعرفه",
-      FileName = "KuwaitiHubKey", 
-      SaveKey = true, 
-      GrabKeyFromSite = false, 
-      Key = {"kuwaitihub1"} -- المفتاح الذي طلبته
+      Title = "نظام الدخول",
+      Subtitle = "المفتاح: kuwaitihub1",
+      Key = {"kuwaitihub1"}
    }
 })
 
--- 1. تبويب القتال (Combat) باستخدام الـ Remotes التي اصطدتها
-local CombatTab = Window:CreateTab("القتال ⚔️", 4483362458)
+-- وظائف مساعدة
+local function getMurderer()
+    for _, v in pairs(game.Players:GetPlayers()) do
+        if v.Backpack:FindFirstChild("Knife") or (v.Character and v.Character:FindFirstChild("Knife")) then return v end
+    end
+end
 
-CombatTab:CreateButton({
-   Name = "رمي سكين تلقائي (Kill Target)",
+--- [ التبويب الأول: الإبادة التلقائية ] ---
+local RaidTab = Window:CreateTab("إبادة فورية 💀", 4483362458)
+
+RaidTab:CreateButton({
+   Name = "قتل الجميع + سحب (Insta-Win)",
    Callback = function()
-       local target = nil
-       local dist = math.huge
-       for _, v in pairs(game.Players:GetPlayers()) do
-           if v ~= game.Players.LocalPlayer and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
-               local d = (v.Character.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
-               if d < dist then
-                   dist = d
-                   target = v
+       local lp = game.Players.LocalPlayer
+       local knife = lp.Backpack:FindFirstChild("Knife") or lp.Character:FindFirstChild("Knife")
+       if knife then
+           lp.Character.Humanoid:EquipTool(knife)
+           for _, v in pairs(game.Players:GetPlayers()) do
+               if v ~= lp and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
+                   v.Character.HumanoidRootPart.CFrame = lp.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, -1)
+                   v.Character.HumanoidRootPart.Anchored = true
+                   task.wait()
+                   knife.Stab:FireServer()
                end
            end
-       end
-       if target then
-           local args = {
-               [1] = target.Character.HumanoidRootPart.CFrame,
-               [2] = target.Character.HumanoidRootPart.Position
-           }
-           game:GetService("Players").LocalPlayer.Character.Knife.Events.KnifeThrown:FireServer(unpack(args))
+       else
+           Rayfield:Notify({Title = "تنبيه", Content = "لست القاتل في هذه الجولة!", Duration = 3})
        end
    end,
 })
 
-CombatTab:CreateButton({
-   Name = "إطلاق نار (Auto Shoot)",
-   Callback = function()
-       local target = nil
-       for _, v in pairs(game.Players:GetPlayers()) do
-           if v ~= game.Players.LocalPlayer and v.Character then
-               target = v
-               break 
+RaidTab:CreateToggle({
+   Name = "تجميد السيرفر بالكامل (Server Freeze)",
+   CurrentValue = false,
+   Callback = function(Value)
+       _G.Freeze = Value
+       while _G.Freeze do
+           for _, v in pairs(game.Players:GetPlayers()) do
+               if v ~= game.Players.LocalPlayer and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
+                   v.Character.HumanoidRootPart.Anchored = true
+               end
            end
-       end
-       if target then
-           local args = {
-               [1] = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame,
-               [2] = target.Character.HumanoidRootPart.Position
-           }
-           game:GetService("Players").LocalPlayer.Character.Gun.Shoot:FireServer(unpack(args))
+           task.wait(0.5)
        end
    end,
 })
 
--- 2. تبويب الجوائز (Rewards)
-local GiftTab = Window:CreateTab("الجوائز 🎁", 4483362458)
+--- [ التبويب الثاني: أوامر الشريف (الشرطي) ] ---
+local SheriffTab = Window:CreateTab("أوامر الشرطي 👮", 4483362458)
 
-GiftTab:CreateButton({
-   Name = "جلب جميع جوائز الباتل باس (Claim All)",
+SheriffTab:CreateButton({
+   Name = "قتل القاتل فوراً (Kill Murderer)",
    Callback = function()
-       Rayfield:Notify({Title = "يوسف هب", Content = "جاري جلب 100 جائزة...", Duration = 3})
-       for i = 1, 100 do
-           local args = {[1] = tostring(i)}
-           game:GetService("ReplicatedStorage").Remotes.Events.Christmas2025Remotes.ClaimBattlePassReward:FireServer(unpack(args))
-           if i % 10 == 0 then task.wait(0.1) end -- انتظار بسيط للحماية
+       local target = getMurderer()
+       local gun = game.Players.LocalPlayer.Backpack:FindFirstChild("Gun") or game.Players.LocalPlayer.Character:FindFirstChild("Gun")
+       if target and gun then
+           game.Players.LocalPlayer.Character.Humanoid:EquipTool(gun)
+           gun.Shoot:FireServer(target.Character.Head.Position)
        end
-       Rayfield:Notify({Title = "تم", Content = "انتهت العملية!", Duration = 3})
    end,
 })
 
--- 3. تبويب الرؤية (Visuals)
-local VisualsTab = Window:CreateTab("رؤية 👁️", 4483362458)
+--- [ التبويب الثالث: ميزات الاستفزاز (Troll) ] ---
+local TrollTab = Window:CreateTab("استفزاز (Troll) 🤡", 4483362458)
 
-VisualsTab:CreateButton({
-   Name = "كشف القاتل والشرطي (ESP)",
+TrollTab:CreateToggle({
+   Name = "سبام شات (Chat Spammer)",
+   CurrentValue = false,
+   Callback = function(Value)
+       _G.Spam = Value
+       local msgs = {"KUWAITI HUB ON TOP!", "Yousuf Is Your Boss", "Ez Game Noob", "أنا أونر الماب غصب"}
+       while _G.Spam do
+           game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msgs[math.random(1, #msgs)], "All")
+           task.wait(2)
+       end
+   end,
+})
+
+TrollTab:CreateButton({
+   Name = "رقص مستمر (Emote Loop)",
    Callback = function()
-       loadstring(game:HttpGet('https://raw.githubusercontent.com/Iratethisname10/CHUB/main/CHUBESP'))()
+       game:GetService("ReplicatedStorage").PlayEmote:FireServer("dab")
    end,
 })
 
--- 4. إعدادات الواجهة
-local ConfigTab = Window:CreateTab("الإعدادات ⚙️", 4483362458)
-ConfigTab:CreateButton({
-   Name = "إغلاق السكريبت",
-   Callback = function() Rayfield:Destroy() end,
+--- [ التبويب الرابع: الأدوات والعملات ] ---
+local FarmTab = Window:CreateTab("تجميع آلي 💰", 4483362458)
+
+FarmTab:CreateToggle({
+   Name = "شفط العملات (Coin Magnet)",
+   CurrentValue = false,
+   Callback = function(Value)
+       _G.Magnet = Value
+       game:GetService("RunService").Heartbeat:Connect(function()
+           if _G.Magnet then
+               for _, v in pairs(workspace:GetDescendants()) do
+                   if v.Name == "Coin_Server" and v:IsA("TouchTransmitter") then
+                       firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 0)
+                       firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 1)
+                   end
+               end
+           end
+       end)
+   end,
 })
 
-Rayfield:Notify({
-   Title = "Kuwaiti Hub Ready!",
-   Content = "المفتاح صحيح، استمتع باللعب يا بطل",
-   Duration = 5,
+--- [ التبويب الخامس: الحماية ] ---
+local ProtectTab = Window:CreateTab("الحماية 🛡️", 4483362458)
+
+ProtectTab:CreateButton({
+   Name = "منع الطرد (Anti-AFK)",
+   Callback = function()
+       local vu = game:GetService("VirtualUser")
+       game:GetService("Players").LocalPlayer.Idled:Connect(function()
+           vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+           wait(1)
+           vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+       end)
+   end,
 })
+
+ProtectTab:CreateToggle({
+   Name = "اختراق الجدران (Noclip)",
+   CurrentValue = false,
+   Callback = function(Value)
+       _G.Noclip = Value
+       game:GetService("RunService").Stepped:Connect(function()
+           if _G.Noclip then
+               for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+                   if v:IsA("BasePart") then v.CanCollide = false end
+               end
+           end
+       end)
+   end,
+})
+
+Rayfield:Notify({Title = "يوسف هب V7", Content = "جاهز للإبادة! استمتع.", Duration = 5})
